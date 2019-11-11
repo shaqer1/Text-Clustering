@@ -43,10 +43,18 @@ def main():
     ps = PorterStemmer()
     #find num of docs
     n = len(docs)
+    #initialize sim mat
+    #simMat = [ [ 0 for i in range(n) ] for j in range(n) ]
+    #process each doc/term
+    cnt = 0
+    idIndexMap={}
     for i in docs:
         if i.find('body') != None:
             title=i.find('title').text
             id=i.attrs['newid']
+            #update index in simMat for this doc
+            idIndexMap[id]=cnt
+            cnt+=1
             body = i.find('body').text
             topics=[]
             if i.attrs.get('topics',"NO")!="NO":
@@ -75,7 +83,11 @@ def main():
                 else:
                     print("d already in termMap[w].TF")
             #compute cosine similarity in similarity matrix
+            #TODO
+            arr=[ 0 for i in range(n) ]
+            simMat.append(arr)
             #print(words)
+    #print(n)
 
 if __name__ == '__main__':
     main()
