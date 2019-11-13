@@ -7,6 +7,9 @@ import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
 from nltk.corpus import stopwords
+from scipy.cluster.hierarchy import dendrogram, linkage, to_tree
+from matplotlib import pyplot as plt
+import scipy.spatial.distance as ssd
 import math 
 
 class Doc:
@@ -14,6 +17,7 @@ class Doc:
         self.title = title
         self.termFreqMap = termFreqMap
         self.body = body
+        self.id=ID
         self.topics = topics
 
 class Term:
@@ -23,6 +27,11 @@ class Term:
         self.docFreq=0
         self.TF={}
         self.IDF=0       
+def sumSquare(di):
+    sum=0
+    for t in di:
+        sum+=di[t]*di[t]
+    return math.sqrt(sum)
 
 def main():
     #variables
@@ -53,7 +62,7 @@ def main():
             title=i.find('title').text
             id=i.attrs['newid']
             #update index in simMat for this doc
-            idIndexMap[id]=cnt
+            idIndexMap[cnt]=id
             cnt+=1
             body = i.find('body').text
             topics=[]
@@ -69,6 +78,7 @@ def main():
             words = [w for w in word_tokens if not w in stop_words] 
             words = FreqDist(words)
             d.termFreqMap=words
+            d.termFreqMap = {x : math.log(y)+1 for x, y in d.termFreqMap.items()}
             #append to term map
             for w in words:
                 if w not in termMap:
@@ -83,11 +93,41 @@ def main():
                 else:
                     print("d already in termMap[w].TF")
             #compute cosine similarity in similarity matrix
-            #TODO
-            arr=[ 0 for i in range(n) ]
+            for i in simMat:
+                i.append(0)
+            arr=[ 0 for i in range(cnt) ]
             simMat.append(arr)
+            #calculate sim
+            k=len(simMat)-1
+            for j in range(len(simMat)):
+                #calculate d1 and d2 sim
+                d1Terms=docMap[idIndexMap[k]].termFreqMap
+                d2Terms=docMap[idIndexMap[j]].termFreqMap
+                simSum=0
+                weight=sumSquare(d1Terms)*sumSquare(d2Terms)
+                for t in d1Terms:
+                    if t in d2Terms:
+                        simSum+=(d1Terms[t]*d2Terms[t])
+                simMat[k][j]=simSum/weight
+                simMat[j][k]=simSum/weight
+                if j==k:
+                    simMat[k][j]=0
             #print(words)
-    #print(n)
+    print(n)
+    X = ssd.squareform(simMat)
+    print(len(X))
+    Z = linkage(X, 'single')
+    Q = to_tree(Z)
+    print(Z[0])
+    print(Z[1])
+    print(Z[2])
+    print(Z)
+    print(Q[0])
+    print(len(Z))
+    P = linkage(X, 'complete')
+    print(len(P))
+    print(cnt)
+
 
 if __name__ == '__main__':
     main()
