@@ -1,3 +1,5 @@
+#import os
+import sys
 from bs4 import BeautifulSoup
 from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize, RegexpTokenizer
@@ -33,11 +35,28 @@ def sumSquare(di):
         sum+=di[t]*di[t]
     return math.sqrt(sum)
 
+def adjMat(root, di, level):
+    if root.is_leaf():
+        if root.id not in di:
+            di[root.id] = set()    
+        di[root.id].add(level)
+        return di
+    if root.left is not None:
+        di.update(adjMat(root.left, di, level+1))
+    if root.right is not None:
+        di.update(adjMat(root.right, di, level+1))
+    for i in di:
+        if (level+1) in di[i]:
+            di[i].add(level)
+    return di
+  
+
 def main():
     #variables
     simMat=[]
     termMap = {}
     docMap = {}
+    topicmap = {}
     #open corpus file
     f=open("./Code/reut2-subset.sgm","r")
     text=f.read()
@@ -70,6 +89,10 @@ def main():
                 topics=i.find('topics').findAll('d')
             termFreq={}
             d = Doc(title,body,id,topics,termFreq)
+            for t in topics:
+                if t not in topics:
+                    topics[t] = set()
+                topics[t].add(d)
             #add to docMap
             docMap[id]=d
             #stem and stop word removal
@@ -112,22 +135,45 @@ def main():
                 simMat[j][k]=simSum/weight
                 if j==k:
                     simMat[k][j]=0
-            #print(words)
-    print(n)
+            #print(words) 
+    #print(n)
+    sys.setrecursionlimit(10**6) 
     X = ssd.squareform(simMat)
-    print(len(X))
     Z = linkage(X, 'single')
-    Q = to_tree(Z)
-    print(Z[0])
-    print(Z[1])
-    print(Z[2])
-    print(Z)
-    print(Q[0])
-    print(len(Z))
-    P = linkage(X, 'complete')
-    print(len(P))
-    print(cnt)
+    singleRoot, singleList = to_tree(Z, rd=True)
+    singleAdj = {}
+    #os.system("date")
+    singleAdj = adjMat(singleRoot, singleAdj, 1)
+    changeKey(singleAdj, idIndexMap, cnt)
+    
 
+    P = linkage(X, 'complete')
+    completeRoot, completeList = to_tree(P, rd=True)
+    completeAdj = {}
+    completeAdj = adjMat(completeRoot, completeAdj, 1)
+    changeKey(completeAdj, idIndexMap, cnt)
+
+    writeSortToFile(singleAdj, "single.txt")
+    writeSortToFile(completeAdj, "complete.txt")
+
+    #print(len(X))2:35 mins
+def changeKey(di, m, r):
+    for x in range(r):
+        if x in di:
+            di[m[x]] = di.pop(x)
+
+
+def writeSortToFile(di, file):
+    f=open(file,"w+")
+    f.write("NEWID	clustersID\n")
+    for i in sorted(di):
+        f.write("{i}	".format(i=i))
+        for c in di[i]:
+            f.write("{c} ".format(c=c))
+        f.write("\n")
+        
+
+    f.close()
 
 if __name__ == '__main__':
     main()

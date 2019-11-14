@@ -1,0 +1,77 @@
+%Do not change 
+\documentclass[12pt, oneside]{article}
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{textpos}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{xspace}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}% You may add the packages you need here
+\usepackage[table,xcdraw]{xcolor}
+\newcommand\rd{\textsuperscript{rd}\xspace}
+\newcommand\nth{\textsuperscript{th}\xspace}
+
+
+\begin{document}
+% Do not modify 
+
+
+%Do not modify other than putting your name, Purdue ID and names of collaborators where stated
+\begin{textblock*}{30cm}(-1.7cm,-2.3cm)
+\noindent {\large CS 473-Fall 2019} \\
+\noindent {\large Name: Shafay Haq} \\
+\noindent {\large Purdue ID: haqs} \\
+\noindent {\large Date: \today}
+\end{textblock*}
+
+\vspace{1cm}
+
+%Do not modify other than typing the homework number after #
+\begin{center}
+\textbf{\Large Project 2} \\ 
+\textbf{Due Date: November 13th, 2019} \\
+\textbf{Instructor: Chris Clifton}\\
+\textbf{Taking one late day}\\
+\end{center}
+
+%Rest should contain your solution for the homework. Feel free to improvise in ways that you believe make grading easier.
+\section*{Part 1: Parse the Corpus}
+
+Used Beutiful soup to parse sgml. extracted title, id and body for each document.
+
+Stop word removal is done by the nltk libirary these are downloaded online.
+I also removed a regex since it eliminated punctuation
+
+words are stemmed when d=processing each doc\\
+Processing steps are as follows\\
+for each doc if body not empty\\
+extract title, body, topics, id\\
+stem body words\\
+calculate term Freq, TF\\
+for each term:\\
+create a term map, of t-> Term Object\\
+add docs this term appears in\\
+calculate IDF for this doc term pair\\
+add column and row to similarity matrix for this doc\\
+calculate cosine similarity between this doc and previously processed docs\\
+end of parsing\\
+
+Packages used are Beautiful Soup, nltk. for parsing and stop words.
+
+\pagebreak
+\section*{Part 2: Run Complete and Single-Linkage Clustering}
+
+The complete linkage contains a smaller number of levels, vs the single linkage\\
+The documents don't really have a sequence, a lot of them are grouped
+ sparsely so they have very little similarity in general.\\
+single linkage has results that went to deeper and more number of clusters\\
+This might be due to the fact that the documents don't have much in common hence why the dedogram is wide
+
+\pagebreak
+\section*{Part 3: Evaluation}
+
+
+
+\end{document}
