@@ -1,0 +1,11 @@
+#!/bin/bash
+
+pip3 install beutifulsoup4
+pip3 install wheel
+pip3 install stop-words
+pip3 install nltk
+pip3 install sklearn
+pip3 install matplotlib
+pip3 install scipy 
+
+python3 ./clustering.py

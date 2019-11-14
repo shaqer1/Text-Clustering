@@ -72,6 +72,26 @@ This might be due to the fact that the documents don't have much in common hence
 \pagebreak
 \section*{Part 3: Evaluation}
 
-
+\subsection*{Question 1}
+The measure is a score of the number of documents in a paticular topic with common clusters divided by the total number of documents in that cluster.\\
+This will give us a measure of how well the docs in the same topic are grouped together!\\ we would calculate this as a per topic level and a average can be computed for 
+all the topics for a certain linkage
+\subsection*{Question 2}
+$\frac{d}{n}$, where d is the number of documents in a paticular topic with common clusters, and n is the total number of documents in that cluster.
+\subsection*{Question 3}
+This metric is relevant since it shows us the ratio of the number of docs it clustered together with the same topic to the total number of docs.\\
+Since if we assume that Topics  is a good measure for relevance and hence clustering criteria, we can use this to measure how much the clustering of TFIDF and cosine similarity 
+matches up with topics. this way if they are very similar we can consider the linkage and clusters to be good.
+\subsection*{Question 4}
+Single Linkage: 435.74\\
+Complete Linkage: 4.02\\
+\subsection*{Question 5}
+The score for single linkage is much higher than complete. 
+This is evident from the files generated which have terms and scores. 
+The complete linkage has very small scores of this measure.\\
+The single linkage has larger scores, and the average reflects this as well.\\
+This score metric also takes into account the heirarchial structure since it counts all the parents of the heirarchy as well.
+The complete linkage also pairs documents with highest distance which is why these scores are evident.
+Given the data set and matches Single linkage is probably the best case here since some topics have a lot of docs in common.
 
 \end{document}
